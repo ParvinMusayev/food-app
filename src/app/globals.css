@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-section.hero{
+/* section.hero{
     @apply block md:grid;
     grid-template-columns: .4fr .6fr;
 }
@@ -46,4 +46,4 @@ div.tabs > *.active{
 
 .flying-button-parent button{
     @apply border-primary bg-primary text-white rounded-full;
-}
+} */
