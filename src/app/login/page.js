@@ -1,27 +1,21 @@
 "use client";
 
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginInProgress, setLoginInProgress] = useState(false)
+  const [loginInProgress, setLoginInProgress] = useState(false);
 
   async function handleFormSubmit(ev) {
     ev.preventDefault();
-    setLoginInProgress(true)
-    const {ok} = await fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-      headers: { "Content-Type": "application/json" },
-    });
-    if(ok) {
+    setLoginInProgress(true);
 
-    } else {
+    await signIn("credentials", { email, password });
 
-    }
-    setLoginInProgress(false)
+    setLoginInProgress(false);
   }
 
   return (
@@ -31,6 +25,7 @@ export default function LoginPage() {
       <form className="block max-w-xs mx-auto" onSubmit={handleFormSubmit}>
         <input
           type="email"
+          name="email"
           placeholder="email"
           value={email}
           disabled={loginInProgress}
@@ -38,13 +33,16 @@ export default function LoginPage() {
         />
         <input
           type="password"
+          name="password"
           placeholder="password"
           value={password}
           disabled={loginInProgress}
           onChange={(ev) => setPassword(ev.target.value)}
         />
 
-        <button disabled={loginInProgress} type="submit">Login</button>
+        <button disabled={loginInProgress} type="submit">
+          Login
+        </button>
 
         <div className="my-4 text-center text-gray-500">
           or login with provider
