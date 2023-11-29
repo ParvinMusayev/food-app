@@ -1,38 +1,65 @@
-"use client"
-import { useSession } from "next-auth/react"
-import Image from "next/image"
-import { redirect } from "next/navigation"
+"use client";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { redirect } from "next/navigation";
+import { useState } from "react";
 
 export default function ProfilePage() {
-    const session = useSession()
-    const {status} = session
-    console.log(session)
-    
+  const session = useSession();
+  const [userName, setUserName] = useState(session?.data?.user?.name || "");
+  const { status } = session;
 
-    if(status === "loading"){
-        return "Loading..."
-    }
+  async function handleProfileInfoUptade(ev) {
+    ev.preventDefault();
+    const response= await fetch("/api/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({name: userName})
+    });
 
-    if (status === 'unauthenticated') {
-        return redirect('/login')
-    }
+  }
 
-    const userImage = session.data?.user?.image
+  if (status === "loading") {
+    return "Loading...";
+  }
 
-    return (
-        <section className="mt-8">
-            <h1 className="text-center text-primary text-4xl mb-4">
-                Profile
-            </h1>
+  if (status === "unauthenticated") {
+    return redirect("/login");
+  }
 
-            <form className="max-w-xs mx-auto border">
-                <div>
-                    <div className="">
-                        <Image src={userImage} alt={"avatar"} width={64} height={64} />
-                    </div>
-                </div>
+  const userImage = session.data.user.image;
 
-            </form>
-        </section>
-    )
+  return (
+    <section className="mt-8">
+      <h1 className="text-center text-primary text-4xl mb-4">Profile</h1>
+
+      <div className="max-w-md mx-auto ">
+        <div className="flex gap-4 items-center">
+          <div>
+            <div className=" p-2 rounded-lg relative">
+              <Image
+                className="rounded-lg w-full h-full mb-1"
+                width={250}
+                height={250}
+                src={userImage}
+                alt={"avatar"}
+              />
+
+              <button type="button">Edit</button>
+            </div>
+          </div>
+          <form className="grow" onSubmit={handleProfileInfoUptade}>
+            <input
+              type="text"
+              value={userName}
+              onChange={(ev) => setUserName(ev.target.value)}
+              placeholder="First and last name"
+            />
+            <input type="email" disabled value={session.data.user.email} />
+            <button type="submit">Save</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
 }
