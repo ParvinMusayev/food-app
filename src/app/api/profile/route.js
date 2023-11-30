@@ -9,9 +9,11 @@ export async function PUT(req) {
   const session = await getServerSession(authOptions);
   const email = session.user.email;
 
-  console.log({ session, data });
+
   if ("name" in data) {
-    await User.updateOne({ email }, { name: data.name });
+    //uptade user name
+   await User.updateOne({ email }, { name: data.name });
+  
   }
 
   return Response.json(true);
