@@ -6,8 +6,10 @@ import { useState } from "react";
 
 export default function ProfilePage() {
   const session = useSession();
-  const [userName, setUserName] = useState(session?.data?.user?.name || "");
+  const [userName, setUserName] = useState( "");
   const { status } = session;
+
+  console.log(session)
 
   async function handleProfileInfoUptade(ev) {
     ev.preventDefault();
